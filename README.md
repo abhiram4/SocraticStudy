@@ -47,3 +47,49 @@ Everything runs **100% in-browser** — no backend required.
 
 ## 🗂️ Project Structure
 
+---
+
+## 🔧 Run Locally (Frontend Only)
+
+1. Install dependencies:
+   `npm install`
+2. Create a `.env` in project root and add keys:
+   ```bash
+   echo GEMINI_API_KEY=your_gemini_key_here > .env
+   echo OPENROUTER_API_KEY=your_openrouter_key_here >> .env
+   ```
+3. Start dev server:
+   `npm run dev`
+
+---
+
+## 🔒 Optional Secure Backend (FastAPI)
+
+Use this if you want to keep API keys server-side and proxy all AI, file, and TTS logic.
+
+1. Setup backend
+   ```bash
+   cd backend
+   python -m venv .venv
+   .venv\\Scripts\\activate  # Windows
+   pip install -r requirements.txt
+   ```
+2. Create `backend/.env` with:
+   ```env
+   OPENROUTER_API_KEY=your_openrouter_key
+   OPENROUTER_BASE=https://openrouter.ai/api/v1
+   FRONTEND_ORIGIN=http://localhost:3000
+   HTTP_REFERER=http://localhost:3000
+   X_TITLE=SocraticStudy
+   ```
+3. Run backend
+   ```bash
+   uvicorn backend.main:app --reload --port 8000
+   ```
+4. Update the frontend services to call `http://localhost:8000` endpoints
+   - POST `/upload_pdf` — upload PDF and get per-page text
+   - POST `/summarize` — summarize page text
+   - POST `/tts` — get MP3 URL under `/media/...`
+   - POST `/doubt` — ask a question with context
+
+
