@@ -1,4 +1,5 @@
-import { generateText } from './openRouterService';
+// Frontend no longer calls AI providers directly. This module now only provides
+// prompt formatting helpers and simple retrieval utilities.
 
 // Remove LangChain dependency to avoid circular imports issues in the browser
 
@@ -59,21 +60,14 @@ export const summarizePageWithContext = async (
     globalContext: string,
     isEli5: boolean
 ): Promise<string> => {
-    try {
-        const prompt = formatSummaryPrompt(
-            currentPageText,
-            prevPageText,
-            nextPageText,
-            globalContext,
-            isEli5
-        );
-        const system = 'You are an expert academic assistant.';
-        return await generateText(system, prompt);
-    } catch (error: unknown) {
-        const message = error instanceof Error ? error.message : String(error);
-        console.error("Error in summarizePageWithContext:", error);
-        throw new Error(`Failed to generate summary: ${message}`);
-    }
+    const prompt = formatSummaryPrompt(
+        currentPageText,
+        prevPageText,
+        nextPageText,
+        globalContext,
+        isEli5
+    );
+    return prompt;
 };
 
 export const answerDoubt = async (question: string, vectorStore: any): Promise<string> => {
@@ -111,8 +105,7 @@ INSTRUCTIONS:
 
 ANSWER:`;
 
-        const system = 'You are an expert academic assistant.';
-        return await generateText(system, prompt);
+        return prompt;
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
         console.error("Error in answerDoubt:", error);

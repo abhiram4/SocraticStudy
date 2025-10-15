@@ -11,10 +11,11 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [react()],
       define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.OPENROUTER_API_KEY': JSON.stringify(env.OPENROUTER_API_KEY),
-        'import.meta.env.OPENROUTER_API_KEY': JSON.stringify(env.OPENROUTER_API_KEY)
+        'process.env.API_KEY': JSON.stringify(undefined),
+        'process.env.GEMINI_API_KEY': JSON.stringify(undefined),
+        'process.env.OPENROUTER_API_KEY': JSON.stringify(undefined),
+        'import.meta.env.OPENROUTER_API_KEY': JSON.stringify(undefined),
+        'import.meta.env.VITE_API_BASE': JSON.stringify(env.VITE_API_BASE || 'http://localhost:8000')
       },
       resolve: {
         alias: {

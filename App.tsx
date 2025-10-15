@@ -5,9 +5,9 @@ import { PdfViewer } from './components/PdfViewer';
 import { SummaryPanel } from './components/SummaryPanel';
 import { DoubtPanel } from './components/DoubtPanel';
 import { BookOpenIcon } from './components/icons/BookOpenIcon';
-import { generateSpeech } from './services/geminiService';
 import { extractTextFromPage, extractTextFromAllPages } from './services/pdfService';
-import { createVectorStore, summarizePageWithContext, answerDoubt as getAnswerFromLLM } from './services/langchainService';
+import { summarizePageWithContext, answerDoubt as getAnswerFromLLM, createVectorStore } from './services/langchainService';
+import { uploadPdf, summarize as summarizeApi, tts as ttsApi } from './services/backendClient';
 import type { PDFDocumentProxy } from './types';
 
 declare const pdfjsLib: any;
@@ -124,9 +124,16 @@ const App: React.FC = () => {
                 setCurrentPage(parseInt(savedPage, 10));
             }
 
-            const allText = await extractTextFromAllPages(pdf);
-            const store = await createVectorStore(allText);
-            setVectorStore(store);
+            // Use backend page texts for consistency (and future server-side extraction)
+            try {
+              const uploaded = await uploadPdf(selectedFile);
+              const store = await createVectorStore(uploaded.pages);
+              setVectorStore(store);
+            } catch (e) {
+              const allText = await extractTextFromAllPages(pdf);
+              const store = await createVectorStore(allText);
+              setVectorStore(store);
+            }
 
         } catch (err) {
             setError('Failed to load and process PDF. The file might be corrupted or unsupported.');
@@ -169,7 +176,7 @@ const App: React.FC = () => {
                     newSummaries[i - 1] = "No text content found on this page.";
                     localStorage.setItem(cacheKey, newSummaries[i - 1]);
                 } else {
-                    const generatedSummary = await summarizePageWithContext(currentPageText, prevPageText, nextPageText, globalContext, isEli5);
+                    const generatedSummary = await summarizeApi(currentPageText, i);
                     newSummaries[i - 1] = generatedSummary;
                     localStorage.setItem(cacheKey, generatedSummary);
                 }
@@ -217,11 +224,7 @@ const App: React.FC = () => {
         setError(null);
         
         try {
-            const res = await generateSpeech(summary);
-            // cache base64 + mime
-            const mimeSafe = res.mimeType || 'audio/wav';
-            localStorage.setItem(audioKey, `${mimeSafe},${res.base64}`);
-            const audioUrl = res.audioUrl;
+            const audioUrl = await ttsApi(summary);
             const newAudioSrcs = [...audioSrcs];
             newAudioSrcs[currentPage - 1] = audioUrl;
             setAudioSrcs(newAudioSrcs);

@@ -41,25 +41,11 @@ Built with React + TypeScript, powered by OpenRouter and Gemini APIs.
 | Storage | Browser `localStorage` |
 | Build Tool | Vite |
 
-Everything runs **100% in-browser** — no backend required.
+This app uses a **FastAPI backend** to handle AI and TTS securely; API keys are never shipped to the browser.
 
 ---
 
 ## 🗂️ Project Structure
-
----
-
-## 🔧 Run Locally (Frontend Only)
-
-1. Install dependencies:
-   `npm install`
-2. Create a `.env` in project root and add keys:
-   ```bash
-   echo GEMINI_API_KEY=your_gemini_key_here > .env
-   echo OPENROUTER_API_KEY=your_openrouter_key_here >> .env
-   ```
-3. Start dev server:
-   `npm run dev`
 
 ---
 
@@ -91,5 +77,50 @@ Use this if you want to keep API keys server-side and proxy all AI, file, and TT
    - POST `/summarize` — summarize page text
    - POST `/tts` — get MP3 URL under `/media/...`
    - POST `/doubt` — ask a question with context
+
+---
+
+## 🔐 Security Model
+
+- Keys are stored only on the backend (`backend/.env`). The frontend calls your backend; keys are never exposed to users.
+- Set `FRONTEND_ORIGIN` in `backend/.env` to your site URL for strict CORS.
+
+---
+
+## 🌐 Deploy to Vercel (Frontend)
+
+1) Push this repo to GitHub and import into Vercel.
+
+2) Vercel project settings → Build & Output:
+   - Framework Preset: Vite
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+
+3) Environment variables (choose ONE setup):
+   - Frontend-only (quick):
+     - `GEMINI_API_KEY` and `OPENROUTER_API_KEY` (keys will be embedded client-side)
+   - Secure (recommended):
+     - Do NOT set AI keys on the frontend project. Instead, deploy the backend separately (see below) and point the frontend to your backend URL.
+
+4) Rewrite client calls (if using the backend):
+   - Update your frontend services to call your backend domain (e.g., `https://your-backend.example.com`).
+
+---
+
+## 🚀 Deploy the Backend (FastAPI)
+
+You can deploy the backend to platforms like Railway, Render, Fly.io, or a VM:
+
+1) Set env vars on the backend service:
+   - `OPENROUTER_API_KEY` (required)
+   - `OPENROUTER_BASE=https://openrouter.ai/api/v1`
+   - `FRONTEND_ORIGIN=https://your-vercel-app.vercel.app`
+   - `HTTP_REFERER=https://your-vercel-app.vercel.app`
+   - `X_TITLE=SocraticStudy`
+
+2) Expose port 8000 and run:
+   - `uvicorn backend.main:app --host 0.0.0.0 --port 8000`
+
+3) In the frontend, call your backend endpoints instead of direct AI providers.
 
 
