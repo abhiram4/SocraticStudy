@@ -30,7 +30,6 @@ app = FastAPI(title="SocraticStudy Backend", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_ORIGIN],
     allow_origins=["https://socraticstudy.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
