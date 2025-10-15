@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SocraticStudy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.25.0",
+    "langsmith": "https://esm.sh/empty",
+    "langsmith/": "https://esm.sh/empty/",
+    "langchain/vectorstores/memory": "https://esm.sh/langchain@0.1.30/vectorstores/memory",
+    "langchain/text_splitter": "https://esm.sh/langchain@0.1.30/text_splitter",
+    "@langchain/core/documents": "https://esm.sh/@langchain/core@0.1.52/documents",
+    "@langchain/core/": "https://esm.sh/@langchain/core@0.1.52/",
+    "@langchain/google-genai": "https://esm.sh/@langchain/google-genai@0.0.16",
+    "langchain/": "https://aistudiocdn.com/langchain@^0.3.36/"
+  }
+}
+</script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-primary': '#10B981', // Emerald 500
+              'brand-secondary': '#059669', // Emerald 600
+              'brand-light': '#D1FAE5', // Emerald 100
+              'brand-dark': '#047857', // Emerald 700
+              'accent': '#F59E0B', // Amber 500
+            },
+             animation: {
+              'shimmer': 'shimmer 1.5s infinite linear',
+            },
+            keyframes: {
+              shimmer: {
+                '0%': { background-position: '-1000px 0' },
+                '100%': { background-position: '1000px 0' },
+              },
+            },
+          },
+        },
+      }
+    </script>
+    <!-- React and ReactDOM UMD (not used by import map runtime modules, but harmless) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`;
+    </script>
+    
+    <!-- Google GenAI SDK -->
+    <script type="module">
+        import { GoogleGenAI } from "https://esm.run/@google/genai";
+        window.GoogleGenAI = GoogleGenAI;
+    </script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-50">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

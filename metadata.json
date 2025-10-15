@@ -1,0 +1,5 @@
+{
+  "name": "SocraticStudy",
+  "description": "An intelligent academic companion for students and researchers. It lets users upload and view PDFs, generate concise AI summaries of individual pages, and read those summaries aloud using text-to-speech.",
+  "requestFramePermissions": []
+}
