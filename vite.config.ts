@@ -15,7 +15,8 @@ export default defineConfig(({ mode }) => {
         'process.env.GEMINI_API_KEY': JSON.stringify(undefined),
         'process.env.OPENROUTER_API_KEY': JSON.stringify(undefined),
         'import.meta.env.OPENROUTER_API_KEY': JSON.stringify(undefined),
-        'import.meta.env.VITE_API_BASE': JSON.stringify(env.VITE_API_BASE || 'http://localhost:8000')
+        // Allow overriding API base via VITE_API_URL; otherwise frontend auto-detects
+        'import.meta.env.VITE_API_URL': JSON.stringify(env.VITE_API_URL || '')
       },
       resolve: {
         alias: {
