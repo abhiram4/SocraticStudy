@@ -1,30 +1,49 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🧠 SocraticStudy  
+**An AI-powered study companion for PDFs**  
 
-# Run and deploy your AI Studio app
+Upload a PDF, get page-wise AI summaries, listen with TTS, and ask questions — all directly in your browser.  
+Built with React + TypeScript, powered by OpenRouter and Gemini APIs.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/drive/1TtcXp5UeGnUYoSgk5xd_Ri80O8oCeKNt
+## 🚀 Features
 
-## Run Locally
+- 📄 **PDF Upload & Viewing**
+  - Navigate pages easily and resume from where you left off.
+- ✍️ **AI Summaries (Per Page)**
+  - Context-aware (neighbor + global) summarization.
+  - Dual modes: **Standard** and **ELI5 (Explain Like I’m 5)**.
+  - Cached locally for instant reloads.
+- 🔊 **Text-to-Speech (TTS)**
+  - Natural voice playback using **Google Gemini SDK**.
+  - Continuous reading across pages in fullscreen.
+- ❓ **Ask Questions**
+  - Ask about the document using a simple retrieval + OpenRouter model.
+- 🧘 **Fullscreen Study Mode**
+  - Distraction-free layout with keyboard shortcuts:
+    - `←` / `→` – Prev / Next page  
+    - `Space` – Play / Pause audio  
+    - `Esc` – Exit fullscreen
+- 💾 **Offline Caching**
+  - Summaries, audio, and progress stored in `localStorage`.
 
-**Prerequisites:**  Node.js
+---
 
+## 🧩 Tech Stack
 
-1. Install dependencies:
-   `npm install`
-2. Create a `.env` file in the project root and add your API key:
-   
-   ```bash
-   echo GEMINI_API_KEY=your_api_key_here > .env
-   ```
-   
-   The app reads `GEMINI_API_KEY` via Vite and also supports running directly in the browser.
-3. Run the app:
-   `npm run dev`
+| Layer | Technology |
+|-------|-------------|
+| Framework | React 19 + TypeScript (Vite) |
+| Styling | Tailwind CSS (CDN) + Inter Font |
+| PDF Rendering | Mozilla PDF.js (CDN) |
+| AI & Q&A | OpenRouter API |
+| TTS | Google Gemini SDK |
+| Storage | Browser `localStorage` |
+| Build Tool | Vite |
 
-Notes
-- If you don't set `GEMINI_API_KEY`, features that call Gemini (summarization, TTS, Q&A) will show a helpful error but the app UI will still load.
-- This project uses CDN import maps for some runtime dependencies (React, LangChain ESM, etc.) when served via `index.html`. Vite handles TypeScript and dev server.
+Everything runs **100% in-browser** — no backend required.
+
+---
+
+## 🗂️ Project Structure
+
