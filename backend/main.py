@@ -22,20 +22,27 @@ def _ensure_dirs():
 
 load_dotenv()
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+# Environment variables - set these on Render Dashboard
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")  # Required: Your OpenRouter API key
 OPENROUTER_BASE = os.getenv("OPENROUTER_BASE", "https://openrouter.ai/api/v1")
-FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")  # Set to your Vercel URL in production
 
 app = FastAPI(title="SocraticStudy Backend", version="1.0.0")
 
-
+# CORS Configuration: Allow your frontend to access this backend
+# Without this, browsers block cross-origin requests for security
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_ORIGIN] if FRONTEND_ORIGIN else ["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=[
+        "https://socraticstudy.vercel.app",  # Your production frontend
+        "http://localhost:3000",  # Local development
+        "*"  # Allow all origins (you can restrict this later)
+    ],
+    allow_credentials=False,  # Set to False when using wildcard
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
+
 _ensure_dirs()
 app.mount("/media", StaticFiles(directory="backend/media"), name="media")
 
@@ -190,8 +197,11 @@ async def doubt(req: DoubtRequest):
 
 
 # Health check
+@app.get("/")
+async def root():
+    return {"status": "ok", "message": "SocraticStudy API is running"}
+
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
-
