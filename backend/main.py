@@ -28,14 +28,14 @@ FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
 
 app = FastAPI(title="SocraticStudy Backend", version="1.0.0")
 
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://socraticstudy.vercel.app"],
+    allow_origins=[FRONTEND_ORIGIN] if FRONTEND_ORIGIN else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 _ensure_dirs()
 app.mount("/media", StaticFiles(directory="backend/media"), name="media")
 
