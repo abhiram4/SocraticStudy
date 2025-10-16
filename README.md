@@ -1,66 +1,122 @@
-# 🧠 SocraticStudy  
-**An AI-powered study companion for PDFs**  
+# SocraticStudy  
+**[https://socratic-study-snowy.vercel.app/](https://socratic-study-snowy.vercel.app/)**  
 
-Upload a PDF, get page-wise AI summaries, listen with TTS, and ask questions — all directly in your browser.  
-Built with React + TypeScript, powered by OpenRouter and Gemini APIs.
-
----
-
-## 🚀 Features
-
-- 📄 **PDF Upload & Viewing**
-  - Navigate pages easily and resume from where you left off.
-- ✍️ **AI Summaries (Per Page)**
-  - Context-aware (neighbor + global) summarization.
-  - Dual modes: **Standard** and **ELI5 (Explain Like I’m 5)**.
-  - Cached locally for instant reloads.
-- 🔊 **Text-to-Speech (TTS)**
-  - Natural voice playback using **Google Gemini SDK**.
-  - Continuous reading across pages in fullscreen.
-- ❓ **Ask Questions**
-  - Ask about the document using a simple retrieval + OpenRouter model.
-- 🧘 **Fullscreen Study Mode**
-  - Distraction-free layout with keyboard shortcuts:
-    - `←` / `→` – Prev / Next page  
-    - `Space` – Play / Pause audio  
-    - `Esc` – Exit fullscreen
-- 💾 **Offline Caching**
-  - Summaries, audio, and progress stored in `localStorage`.
+An AI-powered web application for intelligent, interactive study sessions on PDFs.  
+SocraticStudy integrates document summarization, question answering, and text-to-speech (TTS) to create a seamless learning experience directly in the browser.  
 
 ---
 
-## 🧩 Tech Stack
+## Overview
+
+SocraticStudy enables users to upload academic PDFs, receive **contextual summaries per page**, and **interactively query** the content using advanced large language models.  
+It also includes a **text-to-speech engine** for audio-based learning, **offline caching** for persistence, and a **fullscreen distraction-free study mode**.  
+
+The system combines **React + TypeScript** on the frontend with a **FastAPI + LangChain** backend that securely handles AI model orchestration and TTS generation.
+
+---
+
+## Features
+
+### PDF Upload and Viewing  
+- Supports standard PDF files using **Mozilla PDF.js**.  
+- Persistent page navigation and reading progress tracking.
+
+### Context-Aware Summarization  
+- Page-wise summaries with **cross-page context** (neighbor + global context).  
+- Two summarization modes:  
+  - *Standard* — concise academic-style summaries.  
+  - *ELI5* — simplified explanations.  
+- Summaries cached locally for instant reloads.
+
+### Interactive Q&A  
+- Users can query the document with natural language.  
+- Uses **LangChain** to construct dynamic prompts combining document embeddings and user questions.  
+- Employs **retrieval-augmented generation (RAG)** for contextually accurate answers.
+
+### Text-to-Speech (TTS)  
+- Converts AI summaries to natural speech.  
+- Built with the **Google Gemini SDK** for realistic voice generation.  
+- Supports continuous playback and fullscreen reading.
+
+### Fullscreen Study Mode  
+- Distraction-free interface with keyboard shortcuts:  
+  - `←` / `→` — Navigate between pages  
+  - `Space` — Play / Pause audio  
+  - `Esc` — Exit fullscreen  
+
+### Offline Caching  
+- Summaries, audio, and user progress are stored in `localStorage`.  
+- Ensures reliability even with intermittent connectivity.
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |-------|-------------|
-| Framework | React 19 + TypeScript (Vite) |
-| Styling | Tailwind CSS (CDN) + Inter Font |
-| PDF Rendering | Mozilla PDF.js (CDN) |
-| AI & Q&A | OpenRouter API |
-| TTS | Google Gemini SDK |
+| Frontend | React 19, TypeScript, Vite |
+| Styling | Tailwind CSS, Inter Font |
+| PDF Rendering | Mozilla PDF.js |
+| AI & LLM Orchestration | LangChain + OpenRouter API |
+| TTS Engine | Google Gemini SDK |
+| Backend Framework | FastAPI (Python) |
 | Storage | Browser `localStorage` |
-| Build Tool | Vite |
-
-This app uses a **FastAPI backend** to handle AI and TTS securely; API keys are never shipped to the browser.
+| Deployment | Vercel (Frontend) + Render/Railway (Backend) |
 
 ---
 
-## 🗂️ Project Structure
+## Architecture
+
+The system is divided into two core layers:
+
+1. **Frontend (React + TypeScript)**  
+   - Handles PDF viewing, summary display, TTS playback, and user interaction.  
+   - Communicates with the backend through RESTful endpoints.  
+   - Implements caching and offline storage.
+
+2. **Backend (FastAPI + LangChain)**  
+   - Acts as a secure proxy between frontend and LLM providers.  
+   - Manages summarization, TTS requests, and document Q&A pipelines.  
+   - Integrates LangChain components for:  
+     - PDF text chunking and vector embedding  
+     - Context retrieval  
+     - Query-based generation using LLMs  
+   - All API keys and credentials remain server-side.
 
 ---
 
-## 🔒 Optional Secure Backend (FastAPI)
+## Project Structure
 
-Use this if you want to keep API keys server-side and proxy all AI, file, and TTS logic.
+```
+socratic-study/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── services/
+│   │   ├── hooks/
+│   │   └── pages/
+│   └── vite.config.ts
+└── backend/
+    ├── main.py
+    ├── routes/
+    ├── utils/
+    └── .env
+```
 
-1. Setup backend
+---
+
+## Backend Setup (FastAPI + LangChain)
+
+1. Create a virtual environment and install dependencies:
    ```bash
    cd backend
    python -m venv .venv
-   .venv\\Scripts\\activate  # Windows
+   source .venv/bin/activate  # Linux/Mac
+   .venv\Scripts\activate     # Windows
    pip install -r requirements.txt
    ```
-2. Create `backend/.env` with:
+
+2. Create an `.env` file:
    ```env
    OPENROUTER_API_KEY=your_openrouter_key
    OPENROUTER_BASE=https://openrouter.ai/api/v1
@@ -68,59 +124,58 @@ Use this if you want to keep API keys server-side and proxy all AI, file, and TT
    HTTP_REFERER=http://localhost:3000
    X_TITLE=SocraticStudy
    ```
-3. Run backend
+
+3. Run the backend:
    ```bash
    uvicorn backend.main:app --reload --port 8000
    ```
-4. Update the frontend services to call `http://localhost:8000` endpoints
-   - POST `/upload_pdf` — upload PDF and get per-page text
-   - POST `/summarize` — summarize page text
-   - POST `/tts` — get MP3 URL under `/media/...`
-   - POST `/doubt` — ask a question with context
+
+4. Endpoints:
+   - `POST /upload_pdf` – Extracts and splits PDF text
+   - `POST /summarize` – Summarizes a given page
+   - `POST /tts` – Generates speech for summaries
+   - `POST /doubt` – Handles user queries using RAG
 
 ---
 
-## 🔐 Security Model
+## Deployment Guide
 
-- Keys are stored only on the backend (`backend/.env`). The frontend calls your backend; keys are never exposed to users.
-- Set `FRONTEND_ORIGIN` in `backend/.env` to your site URL for strict CORS.
+### Frontend (Vercel)
 
----
-
-## 🌐 Deploy to Vercel (Frontend)
-
-1) Push this repo to GitHub and import into Vercel.
-
-2) Vercel project settings → Build & Output:
-   - Framework Preset: Vite
+1. Push the repository to GitHub and import into Vercel.
+2. Configure build settings:
+   - Framework: **Vite**
    - Build Command: `npm run build`
    - Output Directory: `dist`
+3. Optionally, add environment variables for public APIs if not using a backend.
 
-3) Environment variables (choose ONE setup):
-   - Frontend-only (quick):
-     - `GEMINI_API_KEY` and `OPENROUTER_API_KEY` (keys will be embedded client-side)
-   - Secure (recommended):
-     - Do NOT set AI keys on the frontend project. Instead, deploy the backend separately (see below) and point the frontend to your backend URL.
+### Backend (Render / Railway / Fly.io)
 
-4) Rewrite client calls (if using the backend):
-   - Update your frontend services to call your backend domain (e.g., `https://your-backend.example.com`).
+1. Set environment variables:
+   ```env
+   OPENROUTER_API_KEY=your_openrouter_key
+   FRONTEND_ORIGIN=https://socratic-study-snowy.vercel.app
+   HTTP_REFERER=https://socratic-study-snowy.vercel.app
+   X_TITLE=SocraticStudy
+   ```
+
+2. Expose port 8000 and start the server:
+   ```bash
+   uvicorn backend.main:app --host 0.0.0.0 --port 8000
+   ```
+
+3. Update frontend API base URL to your deployed backend endpoint.
 
 ---
 
-## 🚀 Deploy the Backend (FastAPI)
+## Security Model
 
-You can deploy the backend to platforms like Railway, Render, Fly.io, or a VM:
+- API keys are securely stored on the backend only.
+- CORS and referer validation are enforced via environment configuration.
+- Frontend communicates exclusively with the backend proxy to prevent key exposure.
 
-1) Set env vars on the backend service:
-   - `OPENROUTER_API_KEY` (required)
-   - `OPENROUTER_BASE=https://openrouter.ai/api/v1`
-   - `FRONTEND_ORIGIN=https://your-vercel-app.vercel.app`
-   - `HTTP_REFERER=https://your-vercel-app.vercel.app`
-   - `X_TITLE=SocraticStudy`
+---
 
-2) Expose port 8000 and run:
-   - `uvicorn backend.main:app --host 0.0.0.0 --port 8000`
+## License
 
-3) In the frontend, call your backend endpoints instead of direct AI providers.
-
-
+This project is open-source under the MIT License.
